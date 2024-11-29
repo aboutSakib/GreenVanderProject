@@ -1,0 +1,42 @@
+[
+  {
+    "id": 1,
+    "question": "What sizes do you offer?",
+    "answer": "We offer a wide range of sizes from S to 2XL for most products. Please check the product page for specific size availability and our size chart for detailed measurements."
+  },
+  {
+    "id": 2,
+    "question": "How can I track my order?",
+    "answer": "You can track your order using the tracking link provided in your order confirmation email. Additionally, you can log in to your account on our website to view the status of your order."
+  },
+  {
+    "id": 3,
+    "question": "What is your return policy?",
+    "answer": "Our return policy allows you to return items within 30 days of receipt for a full refund, provided they are in original condition and packaging. Please see our website for more details."
+  },
+  {
+    "id": 4,
+    "question": "Do you ship internationally?",
+    "answer": "Yes, we ship to many countries worldwide. Shipping fees and delivery times may vary based on the destination."
+  },
+  {
+    "id": 5,
+    "question": "How long will it take to receive my order?",
+    "answer": "Delivery times depend on your location and the shipping method selected at checkout. Standard shipping usually takes 5-7 business days within the U.S."
+  },
+  {
+    "id": 6,
+    "question": "What materials are your clothes made from?",
+    "answer": "Our clothing is made from a variety of high-quality materials, including organic cotton, recycled polyester, and other sustainable fabrics. Each product page includes detailed information about the materials used."
+  },
+  {
+    "id": 7,
+    "question": "How do I care for my Fabrio clothing?",
+    "answer": "To ensure the longevity of your Fabrio clothing, we recommend following the care instructions on the label, typically washing in cold water and air drying when possible."
+  },
+  {
+    "id": 8,
+    "question": "Can I modify or cancel my order after placing it?",
+    "answer": "If you need to modify or cancel your order, please contact our customer service team as soon as possible. Once an order has been processed, changes may not be possible."
+  }
+]

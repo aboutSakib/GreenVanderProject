@@ -1,0 +1,18 @@
+[
+  {
+    "id": 1,
+    "orderNumber": "1238496",
+    "date": "17 Sep 2024",
+    "total": 4000,
+    "paymentMethod": "Cash on delivery",
+
+    "name": "Ashraful Tamim",
+    "phone": "01795-351324",
+    "address": "Kulkura, Moulibazar",
+
+    "order": 4000,
+    "productDiscount": -800,
+    "couponDiscount": -100,
+    "totalOrder": 3980
+  }
+]

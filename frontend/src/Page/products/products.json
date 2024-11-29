@@ -1,0 +1,113 @@
+[
+    {
+      "name": "Cropped Hoodie",
+      "description": "Premium Quality Fabric",
+      "image": "https://fabrilife.com/products/646c762a7496e-square.jpg?v=20",
+      "price": 1000,
+      "originalPrice": 1200,
+      "stockStatus": "In Stock",
+      "discount": 15,
+      "colors": ["bg-red-500", "bg-blue-500", "bg-green-500", "bg-yellow-500"],
+      "sizes": ["S", "M", "L", "XL", "2XL"]
+    },
+    {
+      "name": "Graphic T-Shirt",
+      "description": "Stylish and Comfortable",
+      "image": "https://fabrilife.com/products/646c762a7496e-square.jpg?v=20",
+      "price": 500,
+      "originalPrice": 700,
+      "stockStatus": "In Stock",
+      "discount": 28,
+      "colors": ["bg-gray-500", "bg-black", "bg-white"],
+      "sizes": ["S", "M", "L", "XL"]
+    },
+    {
+      "name": "Sports Jacket",
+      "description": "Lightweight and Breathable",
+      "image": "https://fabrilife.com/products/646c762a7496e-square.jpg?v=20",
+      "price": 1500,
+      "originalPrice": 1800,
+      "stockStatus": "In Stock",
+      "discount": 17,
+      "colors": ["bg-navy-500", "bg-black"],
+      "sizes": ["M", "L", "XL", "2XL"]
+    },
+    {
+      "name": "Casual Sneakers",
+      "description": "Comfortable for Everyday Wear",
+      "image": "https://fabrilife.com/products/646c762a7496e-square.jpg?v=20",
+      "price": 800,
+      "originalPrice": 1000,
+      "stockStatus": "In Stock",
+      "discount": 20,
+      "colors": ["bg-white", "bg-gray-400"],
+      "sizes": ["7", "8", "9", "10"]
+    },
+    {
+      "name": "Denim Jacket",
+      "description": "Classic and Timeless",
+      "image": "https://fabrilife.com/products/646c762a7496e-square.jpg?v=20",
+      "price": 1200,
+      "originalPrice": 1400,
+      "stockStatus": "Out of Stock",
+      "discount": 14,
+      "colors": ["bg-blue-500"],
+      "sizes": ["S", "M", "L"]
+    },
+    {
+      "name": "Running Shorts",
+      "description": "Perfect for Outdoor Activities",
+      "image": "https://fabrilife.com/products/646c762a7496e-square.jpg?v=20",
+      "price": 600,
+      "originalPrice": 800,
+      "stockStatus": "In Stock",
+      "discount": 25,
+      "colors": ["bg-black", "bg-red-500"],
+      "sizes": ["M", "L", "XL"]
+    },
+    {
+      "name": "Wool Sweater",
+      "description": "Warm and Cozy",
+      "image": "https://fabrilife.com/products/646c762a7496e-square.jpg?v=20",
+      "price": 1300,
+      "originalPrice": 1600,
+      "stockStatus": "In Stock",
+      "discount": 19,
+      "colors": ["bg-gray-700", "bg-beige-500"],
+      "sizes": ["S", "M", "L", "XL"]
+    },
+    {
+      "name": "Athletic Leggings",
+      "description": "Flexible and Stylish",
+      "image": "https://fabrilife.com/products/646c762a7496e-square.jpg?v=20",
+      "price": 900,
+      "originalPrice": 1100,
+      "stockStatus": "In Stock",
+      "discount": 18,
+      "colors": ["bg-black", "bg-purple-500"],
+      "sizes": ["S", "M", "L"]
+    },
+    {
+      "name": "Classic Cap",
+      "description": "Trendy Accessory",
+      "image": "https://fabrilife.com/products/646c762a7496e-square.jpg?v=20",
+      "price": 300,
+      "originalPrice": 400,
+      "stockStatus": "In Stock",
+      "discount": 25,
+      "colors": ["bg-blue-500", "bg-gray-300"],
+      "sizes": ["One Size"]
+    },
+    {
+      "name": "Leather Backpack",
+      "description": "Stylish and Functional",
+      "image": "https://fabrilife.com/products/646c762a7496e-square.jpg?v=20",
+      "price": 2000,
+      "originalPrice": 2500,
+      "stockStatus": "In Stock",
+      "discount": 20,
+      "colors": ["bg-brown-500", "bg-black"],
+      "sizes": ["One Size"]
+    }
+  ]
+  
