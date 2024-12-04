@@ -28,9 +28,16 @@ import ProductSales from "../Page/dashboard/pages/ProductSales";
 
 import AboutUs from "../Page/AboutUs/AboutUs";
 import BuyNow from "../Page/Buy now/BuyNow";
+import BuyNowProducts from "../Page/Buy now/BuyNowProducts";
 import CategoryProduct from "../Page/CategoryPage/CategoryProduct";
 import Checkout from "../Page/Checkout/Checkout";
-import { Coupon, Faq, FlashOffer, FlashSaleManagement, Pathao } from "../Page/dashboard/pages";
+import {
+  Coupon,
+  Faq,
+  FlashOffer,
+  FlashSaleManagement,
+  Pathao,
+} from "../Page/dashboard/pages";
 import AddComboOffer from "../Page/dashboard/pages/AddComboOffer";
 import AddNewArrival from "../Page/dashboard/pages/AddNewArrival";
 import AdminProducts from "../Page/dashboard/pages/AdminProducts";
@@ -72,7 +79,8 @@ const router = createBrowserRouter([
       {
         path: "/products/:id",
         element: <AddProductModalDetalis />,
-        loader: ({ params }) => fetch(`${apiUrl}/api/products/single-product/${params.id}`),
+        loader: ({ params }) =>
+          fetch(`${apiUrl}/api/products/single-product/${params.id}`),
       },
       {
         path: "/flashsale-product",
@@ -93,9 +101,15 @@ const router = createBrowserRouter([
       {
         path: "/checkout",
         element: <Checkout />,
-      },{
+      },
+      {
         path: "/buy-now/:id",
         element: <BuyNow />,
+      },
+
+      {
+        path: "/buy-now/",
+        element: <BuyNowProducts />,
       },
       {
         path: "/faq",

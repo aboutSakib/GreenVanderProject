@@ -1,277 +1,159 @@
-import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
 import React, { useState } from "react";
 import { FaBangladeshiTakaSign } from "react-icons/fa6";
-import { useLocation, useNavigate } from "react-router-dom";
-import Swal from "sweetalert2";
-import Loader from "../../Components/Ui/Loader";
-import bkashLogo from "../../Images/bkash.jpg";
-import cardLogo from "../../Images/card.jpg";
-import cashLogo from "../../Images/cash.jpg";
-import nagadLogo from "../../Images/nagad.jpg";
-import rocketLogo from "../../Images/rocket.jpg";
-import { useCart } from "../../contexts/useContext";
+import { PiShoppingCartSimpleLight } from "react-icons/pi";
+import { Link } from "react-router-dom";
+import ProductSkeleton from "../../Components/Ui/ProductSkeleton";
+import useAllProducts from "../../home/components/AllProducts/UseAllProducts";
+import Container from "../../shared/Container";
 
-const Checkout = () => {
-  const location = useLocation();
-  const navigate = useNavigate();
-
-  const { user } = location.state || {};
-  const { cart, syncCart } = useCart();
-
-  const [customerName, setCustomerName] = useState("");
-  const [customerPhone, setCustomerPhone] = useState("");
-  const [customerEmail, setCustomerEmail] = useState("");
-  const [shippingAddress, setShippingAddress] = useState("");
-  const [paymentMethod, setPaymentMethod] = useState("");
-  const [couponCode, setCouponCode] = useState(""); // Coupon Code State
-  const [discount, setDiscount] = useState(0); // Discount State
-  const [deliveryCharge, setDeliveryCharge] = useState(130); // Discount State
-  const {
-    data: cartItems = [],
-    isLoading,
-    error,
-  } = useQuery({
-    queryKey: ["cart",cart],
-    queryFn: async () => {
-      const localCartItemsIds = cart?.map((item) => item.productId);
-      if (localCartItemsIds.length > 0) {
-        const response = await axios.get(`${apiUrl}/api/products/by-ids?ids=${localCartItemsIds}`);
-        return response?.data;
-      } else {
-        return [];
-      }
-    },
-  });
-
+const AllProducts = () => {
   const apiUrl = import.meta.env.VITE_API_URL;
-  // Calculate the total order amount before discount
-  const totalOrder = cartItems.reduce((total, item) => {
-    const cartItem = cart?.find((cartitem) => cartitem.productId === item._id);
-    return total + item.price * cartItem?.quantity || 0;
-  }, 0);
+  const [products, loading, error] = useAllProducts();
 
-  const payemntMethod = [
-    { method: "Cash On Delivery", logo: cashLogo },
-    { method: "Bkash", logo: bkashLogo },
-    { method: "Nagad", logo: nagadLogo },
-    { method: "Rocket", logo: rocketLogo },
-    { method: "Credit/Debit Card", logo: cardLogo },
-  ];
+  const [selectedProducts, setSelectedProducts] = useState([]);
+  const [quantities, setQuantities] = useState({});
 
-  // Apply the coupon
-  const applyCoupon = async () => {
-    if (!couponCode) {
-      return Swal.fire({
-        icon: "warning",
-        title: "No Coupon Code",
-        text: "Please enter a coupon code.",
-      });
-    }
-
-    try {
-      const response = await fetch(`${apiUrl}/api/coupons/apply`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ code: couponCode }),
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setDiscount(data.discount);
-        Swal.fire({
-          icon: "success",
-          title: "Coupon Applied",
-          text: `You've got a ${data.discount}% discount!`,
-        });
-      } else {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Invalid coupon");
-      }
-    } catch (error) {
-      Swal.fire({
-        icon: "error",
-        title: "Coupon Error",
-        text: error.message,
-      });
-    }
-  };
-
-  // Calculate the final total after applying the discount
-  const finalTotal = totalOrder - (totalOrder * discount) / 100 + deliveryCharge;
-
-  // Handle placing an order
-  const handlePlaceOrder = async () => {
-    if (!customerName || !customerPhone || !shippingAddress) {
-      return Swal.fire({
-        icon: "warning",
-        title: "Missing Information",
-        text: "Please fill out all required fields.",
-      });
-    }
-
-    if (!paymentMethod) {
-      return Swal.fire({
-        icon: "warning",
-        title: "Payment Method Required",
-        text: "Please select a payment method.",
-      });
-    }
-    const products = cartItems.map((item) => {
-      const cartItem = cart?.find((cartitem) => cartitem.productId === item._id);
-
-      return {
-        productId: item._id,
-        name: item.name,
-        image: item.images[0] || "",
-        colors: cartItem.colors || "",
-        sizes: cartItem.sizes || "",
-        quantity: cartItem.quantity || 1,
-      };
-    });
-    const orderData = {
-      customerName,
-      customerEmail,
-      customerPhone,
-      shippingAddress,
-      products: products,
-      totalAmount: finalTotal,
-      discountApplied: discount,
-      paymentMethod,
-      userId: user?._id || null,
-      email: user?.email || null,
-    };
-    try {
-      const response = await fetch(`${apiUrl}/api/orders/add-order`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-        body: JSON.stringify(orderData),
-      });
-      const data = await response.json()
-
-      if (data.order._id) {
-        // Clear the cart items for the user after placing the order
-        syncCart([]);
-       const {order} = data
-        navigate("/order-confirm", { state: { order } });      
-      } else {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Order creation failed");
-      }
-    } catch (error) {
-      Swal.fire({
-        icon: "error",
-        title: "Order Failed",
-        text: error.message || "Something went wrong. Please try again.",
-      });
-    }
-  };
-
-  const handleAddressChange = (e) => {
-    const fieldValue = e.target.value;
-
-    // Check if the address contains "Dhaka" (case insensitive)
-    if (fieldValue.toLowerCase().includes("dhaka")) {
-      setDeliveryCharge(60);
-    } else {
-      setDeliveryCharge(130);
-    }
-    setShippingAddress(fieldValue);
-  };
-
-  // show loading while fetching cartitems or if there any error
-  if (isLoading || error) {
-    return <Loader isBorder={true} error={error} extraErrorMessage="Couldnt load the cart items." isLoading={isLoading} loadingText={"Cart items are loading!"} />;
-  }
-
-  if (cart.length === 0) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <h1 className="text-2xl font-bold">No items in the cart!</h1>
-      </div>
+  // Handle product selection
+  const handleSelection = (productId) => {
+    setSelectedProducts((prev) =>
+      prev.includes(productId)
+        ? prev.filter((id) => id !== productId)
+        : [...prev, productId]
     );
-  }
+  };
+
+  // Handle quantity change
+  const handleQuantityChange = (productId, value) => {
+    setQuantities((prev) => ({
+      ...prev,
+      [productId]: Math.max(1, value), // Ensure quantity is at least 1
+    }));
+  };
+
+  // Buy now logic
+  const handleBuyNow = () => {
+    const selectedDetails = products.filter((product) =>
+      selectedProducts.includes(product._id)
+    );
+    console.log("Selected products:", selectedDetails);
+    alert("Proceeding to checkout!");
+  };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6 md:p-10">
-      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2 bg-white p-6 rounded-lg shadow-md">
-          <h2 className="text-xl font-semibold mb-4">Delivery Address</h2>
-          <form className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <input type="text" placeholder="Full Name" className="w-full p-3 border rounded-lg" value={customerName} onChange={(e) => setCustomerName(e.target.value)} required />
-              <input type="number" placeholder="Phone Number" className="w-full p-3 border rounded-lg" value={customerPhone} onChange={(e) => setCustomerPhone(e.target.value)} />
+    <div className="bg-[#193729] min-h-screen py-8">
+      <Container>
+        <h1 className="sm:text-2xl text-xl font-bold text-white">
+          সমস্ত পণ্যসমূহ
+        </h1>
+        {loading && (
+          <>
+            <div className="lg:flex gap-4 flex-wrap w-full hidden mt-5">
+              <ProductSkeleton />
+              <ProductSkeleton />
+              <ProductSkeleton />
+              <ProductSkeleton />
+              <ProductSkeleton />
             </div>
-            <input type="email" placeholder="Email" className="w-full p-3 border rounded-lg" value={customerEmail} onChange={(e) => setCustomerEmail(e.target.value)} required />
-            <textarea placeholder="Address" rows="3" className="w-full p-3 border rounded-lg" value={shippingAddress} onChange={handleAddressChange} required></textarea>
-          </form>
-
-          <div className="mt-8">
-            <h2 className="text-xl font-semibold mb-4">Select Payment Method</h2>
-            <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
-              {payemntMethod.map(({ method, logo }, index) => (
-                <button
-                  key={index}
-                  type="button"
-                  className={`p-4 border rounded-lg shadow-md flex items-center gap-2 transition-colors ${paymentMethod === method ? "border-red-500 bg-red-100" : "border-gray-300"}`}
-                  onClick={() => setPaymentMethod(method)}>
-                  <img loading="lazy" src={logo} alt={method + "Logo"} className="w-10 h-10" />
-                  <span className="font-medium">{method}</span>
-                </button>
+            <div className="lg:hidden gap-4 flex-wrap w-full flex mt-5">
+              <ProductSkeleton />
+              <ProductSkeleton />
+            </div>
+          </>
+        )}
+        {!loading && error && (
+          <p className="text-center mt-2 text-red-600 block w-full">
+            {error.message + `. Couldn't Load the products.`}
+          </p>
+        )}
+        {!loading && !error && products.length === 0 && (
+          <div className="flex justify-center items-center py-8">
+            <p className="text-xl text-gray-600 font-semibold text-center">
+              Coming Soon
+            </p>
+          </div>
+        )}
+        {products && !loading && !error && (
+          <>
+            <div className="py-4 grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+              {products?.map((product) => (
+                <div key={product._id} className="py-4">
+                  <div className="lg:max-w-sm max-w-72 rounded-lg shadow-md border border-[#EAECF0] bg-white hover:shadow-lg transition-shadow duration-300">
+                    <div className="relative">
+                      <Link to={"/products/" + product._id}>
+                        <img
+                          loading="lazy"
+                          src={apiUrl + "/" + product.images[0]}
+                          alt={product.name}
+                          className="rounded-t-lg w-full md:h-[350px] sm:h-[250px] h-[200px] object-cover object-top"
+                        />
+                      </Link>
+                      <span className="absolute top-2 left-2 bg-green-800 text-white px-3 py-2 text-xs rounded">
+                        - {product.discount}%
+                      </span>
+                      <input
+                        type="checkbox"
+                        className="absolute top-2 right-2 w-4 h-4"
+                        checked={selectedProducts.includes(product._id)}
+                        onChange={() => handleSelection(product._id)}
+                      />
+                    </div>
+                    <div className="p-4">
+                      <div className="flex justify-between items-center mb-2">
+                        <span className="inline-block bg-[#84d814] text-white text-[8px] lg:text-sm font-semibold px-3 py-1 rounded-full">
+                          {product.stockStatus}
+                        </span>
+                        <div className="flex flex-col md:flex-row md:items-center text-right">
+                          <div className="text-base font-bold text-green-800 flex items-center justify-end">
+                            {product.price}
+                            <FaBangladeshiTakaSign className=" text-base md:text-lg" />
+                          </div>
+                          <div className="text-sm md:text-base text-gray-400 line-through flex items-center justify-end ml-0 md:ml-2">
+                            {product.originalPrice}
+                            <FaBangladeshiTakaSign className="ml-1 text-xs md:text-sm" />
+                          </div>
+                        </div>
+                      </div>
+                      <h3 className="text-sm md:text-base font-semibold text-gray-800 mb-2">
+                        {product.name}
+                      </h3>
+                      <div className="flex items-center justify-between">
+                        <input
+                          type="number"
+                          value={quantities[product._id] || 1}
+                          onChange={(e) =>
+                            handleQuantityChange(product._id, +e.target.value)
+                          }
+                          className="w-16 text-center border rounded"
+                          min="1"
+                        />
+                        <Link to={`/products/${product._id}`}>
+                          <button className="text-xs md:text-base text-[#1D2939] py-2 px-4 rounded-full flex items-center justify-center space-x-2 bg-white hover:bg-green-600 hover:text-white transition-colors big-dotted-border shadow-md hover:shadow-lg">
+                            <PiShoppingCartSimpleLight className="text-base md:text-lg" />
+                            <span>এখনি কিনুন</span>
+                          </button>
+                        </Link>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               ))}
             </div>
-          </div>
-        </div>
-
-        <div className="bg-white p-6 rounded-lg shadow-md">
-          <h2 className="text-xl font-semibold mb-4">Order Summary</h2>
-          {cartItems.map((item, index) => {
-            const cartItem = cart?.find((cartitem) => cartitem.productId === item._id);
-            return (
-              <div key={index} className="flex gap-4 mb-4">
-                <img loading="lazy" src={apiUrl + "/" + item.images[0]} alt={item.name} className="w-20 h-20 object-cover rounded-md" />
-                <div>
-                  <p className="font-medium">{item.name}</p>
-                  <p>
-                    Size: {cartItem.sizes} | Color: {cartItem.colors}
-                  </p>
-                  <p>Qty: {cartItem.quantity}</p>
-                  <p className="flex">
-                    {item.price} <FaBangladeshiTakaSign />
-                  </p>
-                </div>
-              </div>
-            );
-          })}
-          <div className="mt-6">
-            <p>Order Total: {totalOrder}₺</p>
-            <p className="font-medium">
-              Discount: <span className="text-red-600">{discount}%</span>
-            </p>
-            <p className="font-medium">
-              Delivery Charge: <span className="text-black">{deliveryCharge} BDT</span>
-            </p>
-            <p className="font-bold">Final Total: {finalTotal}₺</p>
-          </div>
-          <button className="w-full mt-4 bg-red-500 text-white py-3 rounded-lg" onClick={handlePlaceOrder}>
-            Place Order
-          </button>
-          <div className="mt-8">
-            <h2 className="text-xl font-semibold mb-4">Apply Coupon</h2>
-            <input type="text" placeholder="Enter coupon code" className="w-full p-3 border rounded-lg" value={couponCode} onChange={(e) => setCouponCode(e.target.value)} />
-            <button className="w-full mt-2 bg-blue-500 text-white py-2 rounded-lg" onClick={applyCoupon}>
-              Apply Coupon
-            </button>
-          </div>
-        </div>
-      </div>
+            <div className="flex justify-center mt-8">
+              <button
+                className="px-6 py-3 bg-green-600 text-white rounded shadow-lg hover:bg-green-700"
+                onClick={handleBuyNow}
+                disabled={selectedProducts.length === 0}
+              >
+                {selectedProducts.length > 1
+                  ? "Proceed to Checkout"
+                  : "Buy Now"}
+              </button>
+            </div>
+          </>
+        )}
+      </Container>
     </div>
   );
 };
 
-export default Checkout;
+export default AllProducts;

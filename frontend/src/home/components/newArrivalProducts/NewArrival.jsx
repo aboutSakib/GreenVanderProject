@@ -65,7 +65,7 @@ const NewArrival = () => {
   }, []);
 
   return (
-    <div className="bg-[#002112] rounded-lg py-10">
+    <div className="bg-white rounded-lg py-10">
       <Container>
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
@@ -180,7 +180,7 @@ const NewArrival = () => {
         </Swiper>
 
         {/* View All Button */}
-        <div className="flex justify-center mt-8">
+        <div className=" mt-8">
           <ViewAllButton to="/products" />
         </div>
       </Container>

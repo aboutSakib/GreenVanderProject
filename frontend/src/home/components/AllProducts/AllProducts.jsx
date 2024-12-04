@@ -1,20 +1,52 @@
-import React from "react";
+import React, { useState } from "react";
 import { FaBangladeshiTakaSign } from "react-icons/fa6";
 import { PiShoppingCartSimpleLight } from "react-icons/pi";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom"; // Import useNavigate
 import ProductSkeleton from "../../../Components/Ui/ProductSkeleton";
-import ViewAllButton from "../../../Components/Ui/ViewAllButton";
+import ViewAllButton from "../../../Components/Ui/ViewAllButton"; // Ensure it's correctly imported
 import Container from "../../../shared/Container";
 import useAllProducts from "./UseAllProducts";
 
 const AllProducts = () => {
   const apiUrl = import.meta.env.VITE_API_URL;
   const [products, loading, error] = useAllProducts();
+  const navigate = useNavigate();
+  // Initialize useNavigate
+
+  const [selectedProducts, setSelectedProducts] = useState([]);
+  const [quantities, setQuantities] = useState({});
+
+  // Handle product selection
+  const handleSelection = (productId) => {
+    setSelectedProducts((prev) =>
+      prev.includes(productId)
+        ? prev.filter((id) => id !== productId)
+        : [...prev, productId]
+    );
+  };
+
+  // Handle quantity change
+  const handleQuantityChange = (productId, value) => {
+    setQuantities((prev) => ({
+      ...prev,
+      [productId]: Math.max(1, value), // Ensure quantity is at least 1
+    }));
+  };
+
+  // Buy now logic
+  const handleBuyNow = () => {
+    const selectedDetails = products.filter((product) =>
+      selectedProducts.includes(product._id)
+    );
+    console.log("Selected products:", selectedDetails);
+    navigate("/buy-now", { state: selectedDetails });
+  };
+  console.log("buy product", handleBuyNow);
 
   return (
-    <div className="bg-[#193729] min-h-screen py-8">
+    <div className="bg-white min-h-screen py-8">
       <Container>
-        <h1 className="sm:text-2xl text-xl font-bold text-white">
+        <h1 className="text-center sm:text-2xl text-xl font-bold text-black">
           সমস্ত পণ্যসমূহ
         </h1>
         {loading && (
@@ -50,7 +82,6 @@ const AllProducts = () => {
               {products?.map((product) => (
                 <div key={product._id} className="py-4">
                   <div className="lg:max-w-sm max-w-72 rounded-lg shadow-md border border-[#EAECF0] bg-white hover:shadow-lg transition-shadow duration-300">
-                    {/* Discount Badge */}
                     <div className="relative">
                       <Link to={"/products/" + product._id}>
                         <img
@@ -63,16 +94,18 @@ const AllProducts = () => {
                       <span className="absolute top-2 left-2 bg-green-800 text-white px-3 py-2 text-xs rounded">
                         - {product.discount}%
                       </span>
+                      <input
+                        type="checkbox"
+                        className="absolute top-2 right-2 w-4 h-4"
+                        checked={selectedProducts.includes(product._id)}
+                        onChange={() => handleSelection(product._id)}
+                      />
                     </div>
-                    {/* Product Info */}
                     <div className="p-4">
-                      {/* Stock Info */}
                       <div className="flex justify-between items-center mb-2">
                         <span className="inline-block bg-[#84d814] text-white text-[8px] lg:text-sm font-semibold px-3 py-1 rounded-full">
                           {product.stockStatus}
                         </span>
-
-                        {/* Price */}
                         <div className="flex flex-col md:flex-row md:items-center text-right">
                           <div className="text-base font-bold text-green-800 flex items-center justify-end">
                             {product.price}
@@ -84,47 +117,48 @@ const AllProducts = () => {
                           </div>
                         </div>
                       </div>
-
-                      {/* Product Title and Description */}
                       <h3 className="text-sm md:text-base font-semibold text-gray-800 mb-2">
                         {product.name}
                       </h3>
-
-                      {/* Color and Size Options */}
-                      <div className="lg:flex justify-between items-center mb-3">
-                        <div className="flex items-center space-x-1">
-                          {product.colors.map((color, index) => (
-                            <span
-                              style={{ backgroundColor: color }}
-                              key={index}
-                              className={`w-4 h-4 md:w-5 md:h-5 rounded-full ${color} inline-block`}
-                            ></span>
-                          ))}
-                        </div>
-
-                        {/* Size Options */}
-                        <div className="text-sm md:text-base font-semibold text-gray-600">
-                          {product.sizes.join(" ")}
-                        </div>
+                      <div className="flex items-center justify-between">
+                        <input
+                          type="number"
+                          value={quantities[product._id] || 1}
+                          onChange={(e) =>
+                            handleQuantityChange(product._id, +e.target.value)
+                          }
+                          className="w-16 text-center border rounded"
+                          min="1"
+                        />
+                        <Link to={`/products/${product._id}`}>
+                          <button className="text-xs md:text-base text-[#1D2939]  rounded-full px-3 py-2 flex items-center justify-center space-x-2 bg-white hover:bg-green-600 hover:text-white transition-colors big-dotted-border shadow-md hover:shadow-lg">
+                            <PiShoppingCartSimpleLight className="text-base md:text-lg" />
+                            <span> কিনুন</span>
+                          </button>
+                        </Link>
                       </div>
-
-                      {/* Buy Button */}
-                      <Link to={`/products/${product._id}`}>
-                        <button className="w-full text-xs md:text-base text-[#1D2939] py-2 md:py-3 px-4 rounded-full flex items-center justify-center space-x-2 bg-white hover:bg-green-600 hover:text-white transition-colors big-dotted-border shadow-md hover:shadow-lg">
-                          <PiShoppingCartSimpleLight className="text-base md:text-lg" />
-                          <span>এখনি কিনুন</span>
-                        </button>
-                      </Link>
                     </div>
                   </div>
                 </div>
               ))}
             </div>
             <div className="flex justify-center mt-8">
-              <ViewAllButton to="/products" />
+              <button
+                className="px-6 py-3 bg-green-600 text-white rounded shadow-lg hover:bg-green-700"
+                onClick={handleBuyNow}
+                disabled={selectedProducts.length === 0}
+              >
+                {selectedProducts.length > 1
+                  ? "Proceed to Checkout"
+                  : "Buy Now"}
+              </button>
             </div>
           </>
         )}
+
+        <div className="mt-4">
+          <ViewAllButton />
+        </div>
       </Container>
     </div>
   );

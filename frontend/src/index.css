@@ -4,15 +4,15 @@
 /* @import "~slick-carousel/slick/slick.css"; */
 /* @import "~slick-carousel/slick/slick-theme.css"; */
 
-.banner-swiper-pagination-bullet{
-    @apply bg-[#667085] h-[10px] md:h-[12px] w-[10px] md:w-[12px] rounded-full block cursor-pointer
+.banner-swiper-pagination-bullet {
+  @apply bg-[#84d814] h-[10px] md:h-[12px] w-[10px] md:w-[12px] rounded-full block cursor-pointer;
 }
-.banner-swiper-pagination-bullet-active{
-    @apply  h-[15px] md:h-[20px] w-[15px] md:w-[20px] 
+.banner-swiper-pagination-bullet-active {
+  @apply h-[15px] md:h-[20px] w-[15px] md:w-[20px];
 }
 #bannerSwiper .swiper-pagination {
-    @apply flex justify-center gap-2 items-center bottom-5
+  @apply flex justify-center gap-2 items-center bottom-5;
 }
-#newArrivalsSwiper{
-    @apply py-14 lg:px-0 px-8
+#newArrivalsSwiper {
+  @apply py-14 lg:px-0 px-8;
 }

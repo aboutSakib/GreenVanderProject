@@ -36,8 +36,8 @@ const ComboOffer = () => {
   }
 
   return (
-    <div className="bg-[#002112]">
-      <h1 className="text-white text-center sm:text-3xl font-bold">
+    <div className="bg-white">
+      <h1 className="text-black text-center sm:text-3xl font-bold">
         কম্বো অফার
       </h1>
       <Container>

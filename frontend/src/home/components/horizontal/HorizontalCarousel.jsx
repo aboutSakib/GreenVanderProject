@@ -23,7 +23,6 @@ const HorizontalCarousel = () => {
   const apiUrl = import.meta.env.VITE_API_URL;
   const categoryName = "ফ্রেশ সবজি";
 
-  // Fetch products filtered by the "Mens" category
   const {
     data: products = [],
     isLoading,
@@ -36,35 +35,29 @@ const HorizontalCarousel = () => {
       );
       return response?.data?.products;
     },
-    enabled: !!categoryName, // Only run the query if mensCategoryId is defined
+    enabled: !!categoryName,
   });
 
   return (
-    <div className="bg-[#002112]">
+    <div className="bg-white">
       <Container>
         <div className="md:block hidden">
           <div className="flex flex-col w-full">
             {/* Title Section */}
             <div className="text-center py-8">
               <h2 className="text-3xl font-bold text-[#221F1C]">
-                <span className="text-[#E31326]"> সবজিসমূহ</span>
+                <span className="text-[#E31326]">সবজিসমূহ</span>
               </h2>
             </div>
 
             {/* Products Carousel */}
             <div className="relative">
               {isLoading && !error && (
-                <>
-                  <div className="lg:flex gap-4 flex-wrap w-full hidden">
-                    <ProductSkeleton />
-                    <ProductSkeleton />
-                    <ProductSkeleton />
-                  </div>
-                  <div className="lg:hidden gap-4 flex-wrap w-full flex">
-                    <ProductSkeleton />
-                    <ProductSkeleton />
-                  </div>
-                </>
+                <div className="lg:flex gap-4 flex-wrap w-full hidden">
+                  <ProductSkeleton />
+                  <ProductSkeleton />
+                  <ProductSkeleton />
+                </div>
               )}
               {!isLoading && error && (
                 <p className="text-center mt-2 text-red-600 block w-full">
@@ -98,21 +91,21 @@ const HorizontalCarousel = () => {
                 observer={true}
                 observeParents={true}
                 modules={[Navigation, Autoplay]}
-                id="mensSwiper"
+                id="productSwiper"
               >
                 {products?.map((item) => (
-                  <SwiperSlide
-                    className="min-w-[200px] w-[250px] bg-gray-100 rounded-md shadow-lg"
-                    key={item._id}
-                  >
-                    <Link to={"/products/" + item._id}>
+                  <SwiperSlide key={item._id} className="flex justify-center">
+                    <Link
+                      to={"/products/" + item._id}
+                      className="bg-white rounded-lg shadow-2xl hover:shadow-3xl hover:scale-105 transition-all duration-300 ease-in-out w-full max-w-[250px] p-4"
+                    >
                       <img
                         loading="lazy"
                         src={apiUrl + "/" + item.images[0]}
-                        className="w-fit rounded-md md:h-[350px] sm:h-[250px] h-[200px] object-cover"
+                        className="rounded-lg w-full h-[200px] object-cover"
                         alt={item.name}
                       />
-                      <p className="mt-2 text-center font-semibold text-[#221F1C] text-xl font-sans py-2">
+                      <p className="mt-2 text-center font-semibold text-[#221F1C] text-xl">
                         {item.name}
                       </p>
                     </Link>
@@ -149,7 +142,7 @@ const HorizontalCarousel = () => {
               </h2>
             </div>
             {isLoading && !error && (
-              <div className="lg:hidden gap-4 flex-wrap w-full flex">
+              <div className="flex gap-4 flex-wrap w-full">
                 <ProductSkeleton />
                 <ProductSkeleton />
               </div>
@@ -173,15 +166,15 @@ const HorizontalCarousel = () => {
                 <Link
                   to={`/products/${product._id}`}
                   key={product._id}
-                  className="bg-gray-100 rounded-lg shadow-sm flex flex-col items-center"
+                  className="bg-white rounded-lg shadow-2xl hover:shadow-3xl hover:scale-105 transition-all duration-300 ease-in-out flex flex-col items-center"
                 >
                   <img
                     loading="lazy"
                     src={apiUrl + "/" + product.images[0]}
                     alt={product.name}
-                    className="w-full h-auto object-cover rounded-lg"
+                    className="rounded-t-lg w-full h-[200px] object-cover"
                   />
-                  <p className="text-center font-semibold text-[#221F1C] text-[15px] font-sans py-2 px-2">
+                  <p className="text-center font-semibold text-[#221F1C] text-[15px] py-2 px-2">
                     {product.name}
                   </p>
                 </Link>
